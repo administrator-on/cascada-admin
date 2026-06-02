@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
-    <title>CASCADA DEL CESAR | Cloud Suite V6.8</title>
+    <title>CASCADA DEL CESAR | Cloud Suite V6.9</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -57,7 +57,6 @@
 </head>
 <body>
 
-    <!-- Botón flotante para abrir menú en celular -->
     <button class="btn btn-info text-white mobile-toggle no-print shadow" onclick="toggleMenu()">
         <i class="bi bi-list"></i> Menú
     </button>
@@ -84,7 +83,6 @@
     </div>
 
     <div class="main-content">
-        <!-- SECCIÓN VENTAS -->
         <section id="ventas" class="page-section">
             <h3 class="fw-bold mb-4">Nueva Factura</h3>
             <div class="row g-4">
@@ -121,7 +119,6 @@
             </div>
         </section>
 
-        <!-- ARQUEO DE PRODUCCIÓN -->
         <section id="produccion" class="page-section">
             <h3 class="fw-bold mb-4">Arqueo de Producción</h3>
             <div class="row g-4">
@@ -129,27 +126,40 @@
                     <div class="card-pro p-4 border-top border-info border-4 shadow-sm">
                         <input type="hidden" id="prodIdx" value="-1">
                         
-                        <!-- NUEVO CAMPO: Fecha Manual para el Arqueo -->
                         <div class="mb-3">
                             <label class="small fw-bold text-primary text-uppercase"><i class="bi bi-calendar-check-fill"></i> Fecha del Arqueo</label>
                             <input type="date" id="prodFechaManual" class="form-control border-primary fw-bold bg-light">
                         </div>
                         <hr class="text-muted opacity-25">
 
-                        <div class="mb-3">
-                            <label class="small fw-bold text-muted text-uppercase">1. Stock Inicial Total (Manual)</label>
-                            <input type="number" id="prodIni" class="form-control border-primary form-control-lg fw-bold" placeholder="¿Con cuánto empezaste?" oninput="calcularProdReal()">
+                        <div class="p-2 bg-light rounded-3 mb-3 border">
+                            <span class="small fw-bold text-dark d-block mb-2"><i class="bi bi-box-seam-fill text-info"></i> CONTEO FÍSICO ACTUAL DEL TURNO:</span>
+                            
+                            <div class="row g-2 mb-2 border-bottom pb-2">
+                                <div class="col-6"><label class="small fw-bold text-muted">AGUA INICIAL</label><input type="number" id="prodIniAgua" class="form-control form-control-sm" value="0" oninput="calcularProdReal()"></div>
+                                <div class="col-6"><label class="small fw-bold text-muted">AGUA FINAL</label><input type="number" id="prodFinAgua" class="form-control form-control-sm" value="0" oninput="calcularProdReal()"></div>
+                            </div>
+                            <div class="row g-2 mb-2 border-bottom pb-2">
+                                <div class="col-6"><label class="small fw-bold text-muted">HIELO INICIAL</label><input type="number" id="prodIniHielo" class="form-control form-control-sm" value="0" oninput="calcularProdReal()"></div>
+                                <div class="col-6"><label class="small fw-bold text-muted">HIELO FINAL</label><input type="number" id="prodFinHielo" class="form-control form-control-sm" value="0" oninput="calcularProdReal()"></div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-6"><label class="small fw-bold text-muted">BOT. INICIAL</label><input type="number" id="prodIniBot" class="form-control form-control-sm" value="0" oninput="calcularProdReal()"></div>
+                                <div class="col-6"><label class="small fw-bold text-muted">BOT. FINAL</label><input type="number" id="prodFinBot" class="form-control form-control-sm" value="0" oninput="calcularProdReal()"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-2 row g-2" style="display: none;">
+                            <div class="col-4"><input type="number" id="prodIni" readonly></div>
+                            <div class="col-4"><input type="number" id="prodFin" readonly></div>
                         </div>
                         <div class="mb-3">
-                            <label class="small fw-bold text-muted text-uppercase">2. Ventas Nuevas (Auto)</label>
+                            <label class="small fw-bold text-muted text-uppercase">Ventas Nuevas Registradas (Auto)</label>
                             <input type="number" id="prodVentas" class="form-control bg-light form-control-lg fw-bold" readonly>
                         </div>
-                        <div class="mb-3">
-                            <label class="small fw-bold text-muted text-uppercase">3. Stock Final Actual (Auto)</label>
-                            <input type="number" id="prodFin" class="form-control bg-light form-control-lg fw-bold" readonly>
-                        </div>
+                        
                         <div class="bg-primary text-white p-3 rounded-4 text-center mb-4 shadow-sm">
-                            <small class="fw-bold opacity-75">PRODUCIDO TOTAL EN TURNO</small>
+                            <small class="fw-bold opacity-75">PRODUCIDO TOTAL CALCULADO</small>
                             <h2 class="fw-bold m-0 display-6" id="prodRes">0</h2>
                         </div>
                         <button class="btn btn-info w-100 py-3 fw-bold text-white shadow-sm rounded-3" onclick="guardarArqueoSinClave()">GUARDAR Y REINICIAR CONTEO</button>
@@ -163,10 +173,10 @@
                                 <thead>
                                     <tr>
                                         <th>Fecha/Hora</th>
-                                        <th>Inicial</th>
-                                        <th>Ventas</th>
-                                        <th>Final Conteo</th>
-                                        <th>Producido por Producto Exacto</th>
+                                        <th>Inicial Total</th>
+                                        <th>Ventas Total</th>
+                                        <th>Final Total</th>
+                                        <th>PRODUCIDO POR PRODUCTO EXACTO</th>
                                         <th class="text-end">Acciones</th>
                                     </tr>
                                 </thead>
@@ -178,7 +188,6 @@
             </div>
         </section>
 
-        <!-- CARTERA/VENTAS -->
         <section id="dashboard" class="page-section active">
             <h3 class="fw-bold mb-2">Cartera y Ventas</h3>
             
@@ -232,16 +241,32 @@
             </div>
 
             <div class="card-pro p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 bg-light p-3 rounded-3 border border-opacity-50">
+                    <span class="small fw-bold text-secondary"><i class="bi bi-check2-square text-primary"></i> Controles de selección múltiple</span>
+                    <button id="btnBorradoMasivo" class="btn btn-danger btn-sm fw-bold px-3 d-none" onclick="solicitarSeguridadMasiva()"><i class="bi bi-trash3-fill me-1"></i> Eliminar Seleccionadas</button>
+                </div>
+
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
-                        <thead><tr><th>No.</th><th>Fecha/Hora</th><th>Cliente / Detalle Carga</th><th>Total</th><th>Abono</th><th>Deuda</th><th>Estado</th><th class="text-center">Acciones</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;"><input type="checkbox" id="checkTodo" class="form-check-input" onchange="seleccionarTodasLasVentasVisibles(this)"></th>
+                                <th>No.</th>
+                                <th>Fecha/Hora</th>
+                                <th>Cliente / Detalle Carga</th>
+                                <th>Total</th>
+                                <th>Abono</th>
+                                <th>Deuda</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
                         <tbody id="histBody"></tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- INVENTARIO -->
         <section id="inventario" class="page-section">
             <div class="d-flex justify-content-between mb-4">
                 <h3 class="fw-bold">Inventario</h3>
@@ -265,20 +290,16 @@
             </div>
         </section>
 
-        <!-- CLIENTES -->
         <section id="clientes" class="page-section"><div class="d-flex justify-content-between mb-4"><h3 class="fw-bold">Clientes</h3><button class="btn btn-dark" onclick="abrirModCli()">+ Nuevo Cliente</button></div><div class="card-pro overflow-hidden"><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Nombre</th><th>ID / Cédula</th><th>Teléfono</th><th>Ciudad</th><th class="text-end px-4">Acciones</th></tr></thead><tbody id="cliBody"></tbody></table></div></div></section>
         
-        <!-- CONFIGURACIÓN EMPRESA -->
         <section id="config" class="page-section"><h3 class="fw-bold mb-4">Datos del Negocio</h3><div class="card-pro p-4 mt-3" style="max-width: 500px;"><div class="mb-3"><label class="small fw-bold">RAZÓN SOCIAL</label><input type="text" id="cfgNom" class="form-control"></div><div class="mb-3"><label class="small fw-bold">NIT</label><input type="text" id="cfgNit" class="form-control"></div><div class="mb-3"><label class="small fw-bold">DIRECCIÓN</label><input type="text" id="cfgDir" class="form-control"></div><div class="mb-4"><label class="small fw-bold">TELÉFONO</label><input type="text" id="cfgTel" class="form-control"></div><button class="btn btn-primary w-100 py-3 fw-bold" onclick="guardarConfig()">GUARDAR DATOS</button></div></section>
     </div>
 
-    <!-- MODALES GENERALES -->
     <div class="modal fade" id="modSec" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered"><div class="modal-content border-0 shadow-lg"><div class="modal-header bg-danger text-white border-0"><h6 class="m-0">Seguridad</h6></div><div class="modal-body text-center"><input type="hidden" id="secAction"><input type="hidden" id="secIdx"><p id="secMsg" class="small fw-bold text-muted mb-3"></p><input type="password" id="secPass" class="form-control text-center mb-3" placeholder="CLAVE"><button type="button" class="btn btn-danger w-100 fw-bold" onclick="ejecutarAccionSecure()">CONFIRMAR</button></div></div></div></div>
     <div class="modal fade" id="modProd" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg"><div class="modal-body p-4"><input type="hidden" id="pIdx"><h6>Ficha Producto</h6><input type="text" id="pNom" class="form-control mb-2" placeholder="Nombre"><input type="number" id="pPre" class="form-control mb-2" placeholder="Precio"><input type="number" id="pSto" class="form-control mb-3" placeholder="Stock Inicial"><button type="button" class="btn btn-primary w-100" onclick="saveProd()">Guardar</button></div></div></div></div>
     <div class="modal fade" id="modCli" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg"><div class="modal-body p-4"><input type="hidden" id="cIdx"><h6>Ficha Cliente</h6><input type="text" id="cNom" class="form-control mb-2" placeholder="NOMBRE"><input type="text" id="cIden" class="form-control mb-2" placeholder="CEDULA / ID"><input type="text" id="cTel" class="form-control mb-2" placeholder="TELEFONO"><input type="text" id="cDir" class="form-control mb-2" placeholder="DIRECCION"><input type="text" id="cCity" class="form-control mb-3" placeholder="CIUDAD"><button type="button" class="btn btn-primary w-100" onclick="saveCli()">Guardar Cliente</button></div></div></div></div>
     <div class="modal fade" id="modDetalleVenta" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg"><div class="modal-header bg-dark text-white"><h6 class="m-0" id="detTitle">Detalle de Factura</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><div class="table-responsive"><table class="table table-sm align-middle"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead><tbody id="detBody"></tbody></table></div><div class="text-end fw-bold border-top pt-2" id="detTotal"></div></div></div></div>
 
-    <!-- SDK DE FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -316,7 +337,6 @@
             establecerFechaDeHoy(); 
         });
 
-        // ASIGNAR FECHA DE HOY A AMBOS CAMPOS POR DEFECTO
         function establecerFechaDeHoy() {
             const hoy = new Date();
             const año = hoy.getFullYear();
@@ -324,12 +344,8 @@
             const dia = String(hoy.getDate()).padStart(2, '0');
             const strFecha = `${año}-${mes}-${dia}`;
             
-            if(document.getElementById('vFechaManual')) {
-                document.getElementById('vFechaManual').value = strFecha;
-            }
-            if(document.getElementById('prodFechaManual')) {
-                document.getElementById('prodFechaManual').value = strFecha;
-            }
+            if(document.getElementById('vFechaManual')) document.getElementById('vFechaManual').value = strFecha;
+            if(document.getElementById('prodFechaManual')) document.getElementById('prodFechaManual').value = strFecha;
         }
 
         function toggleMenu() {
@@ -341,7 +357,7 @@
             document.getElementById('sidebarMenu').classList.remove('open');
         }
 
-        // REPLICACIÓN EN TIEMPO REAL
+        // ESCUCHADORES DE FIREBASE EN TIEMPO REAL
         db.ref('inventario').on('value', snapshot => { inventario = snapshot.val() || []; render(); actualizarCalculosProduccion(); });
         db.ref('clientes').on('value', snapshot => { clientes = snapshot.val() || []; render(); });
         db.ref('ventas').on('value', snapshot => { ventas = snapshot.val() || []; render(); calcularTotalesDia(); aplicarFiltrosSimultaneos(); actualizarCalculosProduccion(); });
@@ -358,10 +374,58 @@
                 if(link.getAttribute('onclick').includes(id)) link.classList.add('active');
             });
 
-            if(id === 'produccion') { document.getElementById('prodIdx').value = "-1"; establecerFechaDeHoy(); actualizarCalculosProduccion(); }
-            if(id === 'dashboard') { calcularTotalesDia(); limpiarFiltrosAvanzados(); }
+            if(id === 'produccion') { 
+                document.getElementById('prodIdx').value = "-1"; 
+                establecerFechaDeHoy(); 
+                document.getElementById('prodIniAgua').value = 0;
+                document.getElementById('prodFinAgua').value = 0;
+                document.getElementById('prodIniHielo').value = 0;
+                document.getElementById('prodFinHielo').value = 0;
+                document.getElementById('prodIniBot').value = 0;
+                document.getElementById('prodFinBot').value = 0;
+                actualizarCalculosProduccion(); 
+            }
+            if(id === 'dashboard') { 
+                calcularTotalesDia(); 
+                limpiarFiltrosAvanzados(); 
+                document.getElementById('checkTodo').checked = false;
+                verificarCheckboxesSeleccionados();
+            }
             if(id === 'ventas') { establecerFechaDeHoy(); }
             render();
+        }
+
+        // GESTIÓN DE SELECCIÓN MÚLTIPLE DE VENTAS
+        function seleccionarTodasLasVentasVisibles(masterCheckbox) {
+            document.querySelectorAll('#histBody tr').forEach(tr => {
+                if (tr.style.display !== 'none') {
+                    const cb = tr.querySelector('.venta-checkbox');
+                    if (cb) cb.checked = masterCheckbox.checked;
+                }
+            });
+            verificarCheckboxesSeleccionados();
+        }
+
+        function verificarCheckboxesSeleccionados() {
+            const seleccionados = document.querySelectorAll('.venta-checkbox:checked').length;
+            const btnBorrado = document.getElementById('btnBorradoMasivo');
+            if(btnBorrado) {
+                if (seleccionados > 0) {
+                    btnBorrado.classList.remove('none', 'd-none');
+                    btnBorrado.innerText = `Eliminar Seleccionadas (${seleccionados})`;
+                } else {
+                    btnBorrado.classList.add('d-none');
+                }
+            }
+        }
+
+        function solicitarSeguridadMasiva() {
+            const seleccionados = document.querySelectorAll('.venta-checkbox:checked').length;
+            document.getElementById('secAction').value = "delVentasMasivas";
+            document.getElementById('secIdx').value = "-1";
+            document.getElementById('secPass').value = "";
+            document.getElementById('secMsg').innerText = `¿Estás seguro de eliminar las ${seleccionados} facturas seleccionadas en lote? El stock se devolverá al inventario.`;
+            if(mSec) mSec.show();
         }
 
         function aplicarFiltrosSimultaneos() {
@@ -399,17 +463,22 @@
                     });
                 } else {
                     tr.style.display = 'none';
+                    const cb = tr.querySelector('.venta-checkbox');
+                    if (cb) cb.checked = false; // Desmarcar si se oculta
                 }
             });
 
             if (document.getElementById('historiaAgua')) document.getElementById('historiaAgua').innerText = acumuladoAgua;
             if (document.getElementById('historiaHielo')) document.getElementById('historiaHielo').innerText = acumuladoHielo;
             if (document.getElementById('historiaBotellon')) document.getElementById('historiaBotellon').innerText = acumuladoBotellon;
+            verificarCheckboxesSeleccionados();
         }
 
         function limpiarFiltrosAvanzados() {
             document.getElementById('filtroCliente').value = "";
             document.getElementById('filtroFecha').value = "";
+            const masterCb = document.getElementById('checkTodo');
+            if(masterCb) masterCb.checked = false;
             aplicarFiltrosSimultaneos();
         }
 
@@ -422,6 +491,7 @@
                 else if (tipo === 'pagado') tr.style.display = (text.includes(hoyStr) && text.includes('pago')) ? '' : 'none';
                 else if (tipo === 'debe') tr.style.display = (text.includes(hoyStr) && text.includes('debe')) ? '' : 'none';
             });
+            verificarCheckboxesSeleccionados();
         }
 
         function agregarStockEscrito(idx) {
@@ -485,35 +555,44 @@
             ventas.forEach(v => { if(!v.arqueado) { v.items.forEach(i => totalVendidos += parseInt(i.cant) || 0); } });
             if(document.getElementById('prodVentas')) document.getElementById('prodVentas').value = totalVendidos;
             
-            let totalInventario = 0;
-            inventario.forEach(p => { totalInventario += (parseInt(p.stock) || 0); });
-            if(document.getElementById('prodFin')) document.getElementById('prodFin').value = totalInventario;
-            
             calcularProdReal();
         }
 
         function calcularProdReal() {
-            const ini = parseFloat(document.getElementById('prodIni').value) || 0;
+            // Unifica iniciales escritas por producto
+            const iniAgua = parseFloat(document.getElementById('prodIniAgua').value) || 0;
+            const iniHielo = parseFloat(document.getElementById('prodIniHielo').value) || 0;
+            const iniBot = parseFloat(document.getElementById('prodIniBot').value) || 0;
+            const iniTotal = iniAgua + iniHielo + iniBot;
+            document.getElementById('prodIni').value = iniTotal;
+
+            // Unifica finales escritas por producto
+            const finAgua = parseFloat(document.getElementById('prodFinAgua').value) || 0;
+            const finHielo = parseFloat(document.getElementById('prodFinHielo').value) || 0;
+            const finBot = parseFloat(document.getElementById('prodFinBot').value) || 0;
+            const finTotal = finAgua + finHielo + finBot;
+            document.getElementById('prodFin').value = finTotal;
+
             const ven = parseFloat(document.getElementById('prodVentas').value) || 0;
-            const fin = parseFloat(document.getElementById('prodFin').value) || 0;
-            const producido = (fin + ven) - ini;
+            
+            // Producido Neto General = (Fin + Ventas) - Inicial
+            const producido = (finTotal + ven) - iniTotal;
             if(document.getElementById('prodRes')) document.getElementById('prodRes').innerText = producido;
         }
 
-        // GUARDAR ARQUEO CON ASIGNACIÓN DE FECHA MANUAL HISTÓRICA
         function guardarArqueoSinClave() {
-            const ini = parseFloat(document.getElementById('prodIni').value) || 0;
-            const ven = parseFloat(document.getElementById('prodVentas').value) || 0;
-            const fin = parseFloat(document.getElementById('prodFin').value) || 0;
             const pIdx = parseInt(document.getElementById('prodIdx').value);
             
             if(pIdx !== -1) {
                 solicitarSeguridad('prodSave', pIdx);
             } else {
+                calcularProdReal();
+                const ini = parseFloat(document.getElementById('prodIni').value) || 0;
+                const ven = parseFloat(document.getElementById('prodVentas').value) || 0;
+                const fin = parseFloat(document.getElementById('prodFin').value) || 0;
                 const res = (fin + ven - ini);
                 const hoy = new Date();
 
-                // Procesamiento de la fecha seleccionada en el módulo de arqueo
                 const fechaManualRaw = document.getElementById('prodFechaManual').value;
                 let fechaFinalArqueo = hoy.toLocaleDateString();
                 if(fechaManualRaw) {
@@ -521,38 +600,61 @@
                     fechaFinalArqueo = `${parseInt(partes[2])}/${parseInt(partes[1])}/${partes[0]}`;
                 }
 
-                let prodAgua = 0, prodHielo = 0, prodBotellon = 0;
+                // CÓMPUTO DE PRODUCCIÓN EXACTA POR ARTÍCULO (Stock Final + Ventas del Turno) - Stock Inicial
+                let ventasTurnoAgua = 0, ventasTurnoHielo = 0, ventasTurnoBotellon = 0;
                 ventas.forEach(v => {
                     if(!v.arqueado) {
                         v.items.forEach(item => {
                             const n = item.nombre.toLowerCase();
-                            if(n.includes("agua")) prodAgua += item.cant;
-                            else if(n.includes("hielo")) prodHielo += item.cant;
-                            else if(n.includes("botellon") || n.includes("botellón")) prodBotellon += item.cant;
+                            if(n.includes("agua")) ventasTurnoAgua += (parseInt(item.cant) || 0);
+                            else if(n.includes("hielo")) ventasTurnoHielo += (parseInt(item.cant) || 0);
+                            else if(n.includes("botellon") || n.includes("botellón")) ventasTurnoBotellon += (parseInt(item.cant) || 0);
                         });
                     }
                 });
 
+                const finalAgua = parseFloat(document.getElementById('prodFinAgua').value) || 0;
+                const iniAgua = parseFloat(document.getElementById('prodIniAgua').value) || 0;
+                const netoAguaReal = (finalAgua + ventasTurnoAgua) - iniAgua;
+
+                const finalHielo = parseFloat(document.getElementById('prodFinHielo').value) || 0;
+                const iniHielo = parseFloat(document.getElementById('prodIniHielo').value) || 0;
+                const netoHieloReal = (finalHielo + ventasTurnoHielo) - iniHielo;
+
+                const finalBot = parseFloat(document.getElementById('prodFinBot').value) || 0;
+                const iniBot = parseFloat(document.getElementById('prodIniBot').value) || 0;
+                const netoBotReal = (finalBot + ventasTurnoBotellon) - iniBot;
+
                 const obj = { 
-                    fecha: fechaFinalArqueo, // <--- Se inyecta la fecha histórica o la de hoy elegida
+                    fecha: fechaFinalArqueo, 
                     hora: hoy.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
                     ini, ven, fin, res,
-                    detAgua: prodAgua, 
-                    detHielo: prodHielo,
-                    detBotellon: prodBotellon
+                    detAgua: netoAguaReal, 
+                    detHielo: netoHieloReal,
+                    detBotellon: netoBotReal,
+                    metaIniAgua: iniAgua, metaFinAgua: finalAgua,
+                    metaIniHielo: iniHielo, metaFinHielo: finalHielo,
+                    metaIniBot: iniBot, metaFinBot: finalBot
                 };
                 
                 ventas.forEach(v => { if(!v.arqueado) v.arqueado = true; });
                 if(!produccion) produccion = [];
                 produccion.push(obj);
                 
-                document.getElementById('prodIni').value = ""; 
+                // Reiniciar los campos
+                document.getElementById('prodIniAgua').value = 0;
+                document.getElementById('prodFinAgua').value = 0;
+                document.getElementById('prodIniHielo').value = 0;
+                document.getElementById('prodFinHielo').value = 0;
+                document.getElementById('prodIniBot').value = 0;
+                document.getElementById('prodFinBot').value = 0;
+                
                 db.ref('ventas').set(ventas);
                 db.ref('produccion').set(produccion);
-                establecerFechaDeHoy(); // Reinicia el input a la fecha actual corriente
+                establecerFechaDeHoy(); 
                 actualizarCalculosProduccion();
                 render(); 
-                alert("Arqueo guardado de forma exitosa.");
+                alert("Arqueo de producción física guardado exitosamente.");
             }
         }
 
@@ -561,44 +663,114 @@
             const acc = document.getElementById('secAction').value; 
             const idx = parseInt(document.getElementById('secIdx').value); 
             
-            if(acc === 'delVenta') { ventas[idx].items.forEach(c => { const p = inventario.find(i => i.id == c.id); if(p) p.stock += c.cant; }); ventas.splice(idx,1); db.ref('inventario').set(inventario); db.ref('ventas').set(ventas); } 
-            else if(acc === 'editVenta') { const v = ventas[idx]; v.items.forEach(c => { const p = inventario.find(i => i.id == c.id); if(p) p.stock += c.cant; }); document.getElementById('vCliente').value = v.cliente; carrito = [...v.items]; ventas.splice(idx,1); db.ref('inventario').set(inventario); db.ref('ventas').set(ventas); showSection('ventas'); renderCart(); } 
+            if(acc === 'delVenta') { 
+                ventas[idx].items.forEach(c => { const p = inventario.find(i => i.id == c.id); if(p) p.stock += c.cant; }); 
+                ventas.splice(idx,1); 
+                db.ref('inventario').set(inventario); 
+                db.ref('ventas').set(ventas); 
+            } 
+            else if(acc === 'delVentasMasivas') {
+                // BORRADO EN LOTE SELECCIONADO
+                let checkboxesActivos = document.querySelectorAll('.venta-checkbox:checked');
+                let indicesAEliminar = [];
+                
+                checkboxesActivos.forEach(cb => {
+                    indicesAEliminar.push(parseInt(cb.getAttribute('data-index')));
+                });
+                
+                // Ordenar índices de mayor a menor para borrar de atrás hacia adelante sin descuadrar posiciones
+                indicesAEliminar.sort((a, b) => b - a);
+                
+                indicesAEliminar.forEach(originalIdx => {
+                    const v = ventas[originalIdx];
+                    if(v) {
+                        v.items.forEach(c => { 
+                            const p = inventario.find(i => i.id == c.id); 
+                            if(p) p.stock += c.cant; 
+                        });
+                        ventas.splice(originalIdx, 1);
+                    }
+                });
+                
+                document.getElementById('checkTodo').checked = false;
+                db.ref('inventario').set(inventario); 
+                db.ref('ventas').set(ventas);
+                alert("Facturas seleccionadas eliminadas y stock revertido.");
+            }
+            else if(acc === 'editVenta') { 
+                const v = ventas[idx]; 
+                v.items.forEach(c => { const p = inventario.find(i => i.id == c.id); if(p) p.stock += c.cant; }); 
+                document.getElementById('vCliente').value = v.cliente; 
+                carrito = [...v.items]; 
+                ventas.splice(idx,1); 
+                db.ref('inventario').set(inventario); 
+                db.ref('ventas').set(ventas); 
+                showSection('ventas'); 
+                renderCart(); 
+            } 
             else if(acc === 'delProd') { inventario.splice(idx, 1); db.ref('inventario').set(inventario); } 
             else if(acc === 'delCli') { clientes.splice(idx, 1); db.ref('clientes').set(clientes); } 
             else if(acc === 'prodSave') { 
-                // Al editar un arqueo viejo, también respeta la fecha que tenía guardada originalmente
-                produccion[idx].ini = parseFloat(document.getElementById('prodIni').value) || 0; 
-                produccion[idx].ven = parseFloat(document.getElementById('prodVentas').value) || 0; 
-                produccion[idx].fin = parseFloat(document.getElementById('prodFin').value) || 0;
-                produccion[idx].res = (produccion[idx].fin + produccion[idx].ven - produccion[idx].ini);
+                // Guardar edición de arqueo viejo
+                const p = produccion[idx];
+                const iniAgua = parseFloat(document.getElementById('prodIniAgua').value) || 0;
+                const finAgua = parseFloat(document.getElementById('prodFinAgua').value) || 0;
+                const iniHielo = parseFloat(document.getElementById('prodIniHielo').value) || 0;
+                const finHielo = parseFloat(document.getElementById('prodFinHielo').value) || 0;
+                const iniBot = parseFloat(document.getElementById('prodIniBot').value) || 0;
+                const finBot = parseFloat(document.getElementById('prodFinBot').value) || 0;
+
+                p.metaIniAgua = iniAgua; p.metaFinAgua = finAgua;
+                p.metaIniHielo = iniHielo; p.metaFinHielo = finHielo;
+                p.metaIniBot = iniBot; p.metaFinBot = finBot;
+
+                p.ini = iniAgua + iniHielo + iniBot;
+                p.fin = finAgua + finHielo + finBot;
+                p.ven = parseFloat(document.getElementById('prodVentas').value) || 0;
+                p.res = (p.fin + p.ven - p.ini);
                 
+                // Recalcular desglosados aproximados o exactos del arqueo editado
+                p.detAgua = finAgua - iniAgua; 
+                p.detHielo = finHielo - iniHielo;
+                p.detBotellon = finBot - iniBot;
+
                 const fechaManualRaw = document.getElementById('prodFechaManual').value;
                 if(fechaManualRaw) {
                     const partes = fechaManualRaw.split('-');
-                    produccion[idx].fecha = `${parseInt(partes[2])}/${parseInt(partes[1])}/${partes[0]}`;
+                    p.fecha = `${parseInt(partes[2])}/${parseInt(partes[1])}/${partes[0]}`;
                 }
                 
-                document.getElementById('prodIni').value = ""; 
                 document.getElementById('prodIdx').value = "-1"; 
                 db.ref('produccion').set(produccion);
+                
+                document.getElementById('prodIniAgua').value = 0;
+                document.getElementById('prodFinAgua').value = 0;
+                document.getElementById('prodIniHielo').value = 0;
+                document.getElementById('prodFinHielo').value = 0;
+                document.getElementById('prodIniBot').value = 0;
+                document.getElementById('prodFinBot').value = 0;
+
                 establecerFechaDeHoy();
                 actualizarCalculosProduccion();
-                alert("Registro arqueado modificado.");
+                alert("Registro de arqueo modificado.");
             } 
             else if(acc === 'delArqueo') { produccion.splice(idx, 1); db.ref('produccion').set(produccion); } 
             else if(acc === 'editArqueo') { 
                 const p = produccion[idx]; 
                 document.getElementById('prodIdx').value = idx; 
-                document.getElementById('prodIni').value = p.ini; 
+                
+                document.getElementById('prodIniAgua').value = p.metaIniAgua || 0;
+                document.getElementById('prodFinAgua').value = p.metaFinAgua || 0;
+                document.getElementById('prodIniHielo').value = p.metaIniHielo || 0;
+                document.getElementById('prodFinHielo').value = p.metaFinHielo || 0;
+                document.getElementById('prodIniBot').value = p.metaIniBot || 0;
+                document.getElementById('prodFinBot').value = p.metaFinBot || 0;
+
                 document.getElementById('prodVentas').value = p.ven;
-                document.getElementById('prodFin').value = p.fin; 
                 
                 if(p.fecha) {
                     const partes = p.fecha.split('/');
-                    const año = partes[2];
-                    const mes = partes[1].padStart(2, '0');
-                    const dia = partes[0].padStart(2, '0');
-                    document.getElementById('prodFechaManual').value = `${año}-${mes}-${dia}`;
+                    document.getElementById('prodFechaManual').value = `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
                 }
                 calcularProdReal(); 
             } 
@@ -696,6 +868,7 @@
                     let renderPills = badg.length > 0 ? `<br><span class="prod-tag"><i class="bi bi-box-seam"></i> ${badg.join(' | ')}</span>` : '';
 
                     return `<tr>
+                        <td><input type="checkbox" class="form-check-input venta-checkbox" data-index="${rIdx}" onchange="verificarCheckboxesSeleccionados()"></td>
                         <td><strong class="text-primary">${v.id}</strong></td>
                         <td><small>${v.fecha}<br>${v.hora}</small></td>
                         <td><strong>${v.cliente}</strong>${renderPills}</td>
@@ -727,10 +900,10 @@
                         <td>${p.ven}</td>
                         <td><strong>${p.fin}</strong></td>
                         <td>
-                            <span class="badge bg-primary text-white font-monospace">${txtAgua} Agua</span>
-                            <span class="badge bg-info text-dark font-monospace">${txtHielo} Hielo</span>
-                            <span class="badge bg-secondary text-white font-monospace">${txtBotellon} Bot.</span>
-                            <div class="small text-success fw-bold mt-1">Total Turno: +${p.res} unds</div>
+                            <span class="badge bg-primary text-white font-monospace">${txtAgua > 0 ? '+' : ''}${txtAgua} Agua</span>
+                            <span class="badge bg-info text-dark font-monospace">${txtHielo > 0 ? '+' : ''}${txtHielo} Hielo</span>
+                            <span class="badge bg-secondary text-white font-monospace">${txtBotellon > 0 ? '+' : ''}${txtBotellon} Bot.</span>
+                            <div class="small text-success fw-bold mt-1">Prod. Neta Turno: +${p.res} unds</div>
                         </td>
                         <td class="text-end">
                             <button type="button" class="btn-action btn-edit" title="Modificar" onclick="solicitarSeguridad('editArqueo', ${rIdx})"><i class="bi bi-pencil"></i></button>
