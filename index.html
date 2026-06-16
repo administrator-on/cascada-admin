@@ -276,7 +276,6 @@
             </div>
         </section>
 
-        <!-- SECCIÓN CONFIGURACIÓN -->
         <section id="config" class="page-section">
             <h3 class="fw-bold mb-4">Administración General</h3>
             <ul class="nav nav-tabs mb-3" id="configTabs" role="tablist">
@@ -345,7 +344,6 @@
         </section>
     </div>
 
-    <!-- MODALES -->
     <div class="modal fade" id="modDetalleVenta" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
@@ -404,6 +402,31 @@
         let sesionActiva = false;
 
         // ============================================================
+        // FUNCIÓN PARA ESTABLECER FECHA ACTUAL
+        // ============================================================
+        function establecerFechaActual() {
+            const hoy = new Date();
+            const año = hoy.getFullYear();
+            const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+            const dia = String(hoy.getDate()).padStart(2, '0');
+            const fechaStr = `${año}-${mes}-${dia}`;
+            
+            // Solo establecer si no hay una fecha seleccionada manualmente
+            const inputVentas = document.getElementById('vFechaManual');
+            const inputProduccion = document.getElementById('prodFechaManual');
+            
+            if (inputVentas && !editVentaOriginalMetadata) {
+                inputVentas.value = fechaStr;
+            }
+            if (inputProduccion) {
+                // Solo establecer si no está en modo edición de arqueo
+                if (document.getElementById('prodIdx').value === "-1") {
+                    inputProduccion.value = fechaStr;
+                }
+            }
+        }
+
+        // ============================================================
         // INICIALIZACIÓN
         // ============================================================
         document.addEventListener("DOMContentLoaded", function() {
@@ -444,6 +467,9 @@
             document.getElementById('prodFinHielo').addEventListener('input', recargarProduccion);
             document.getElementById('prodIniBot').addEventListener('input', recargarProduccion);
             document.getElementById('prodFinBot').addEventListener('input', recargarProduccion);
+            
+            // Establecer fecha actual al cargar
+            establecerFechaActual();
         });
 
         // ============================================================
@@ -492,21 +518,8 @@
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('userActiveBadge').innerHTML = '<i class="bi bi-person-fill me-1"></i>' + u.nombre.toUpperCase();
             
-            // Aplicar permisos según rol
-            const esAdmin = u.rol === 'admin';
-            const esVendedor = u.rol === 'vendedor';
-            const esPartner = u.rol === 'partner';
-            
-            // Mostrar/ocultar elementos según rol
-            document.querySelectorAll('.admin-only').forEach(el => {
-                el.style.display = esAdmin ? '' : 'none';
-            });
-            
-            // Mostrar/ocultar pestaña config solo para admin
-            const configLink = document.getElementById('lnk-config');
-            if (configLink) {
-                configLink.style.display = esAdmin ? '' : 'none';
-            }
+            // Establecer fecha actual al cargar perfil
+            establecerFechaActual();
             
             setTimeout(() => {
                 showSection('dashboard');
@@ -542,7 +555,6 @@
 
         function navegarHacia(id) {
             if (!usuarioSesionActiva && !sesionActiva) return;
-            // Restringir acceso a config solo para admin
             if (id === 'config' && usuarioSesionActiva && usuarioSesionActiva.rol !== 'admin') {
                 alert("Acceso restringido. Solo administradores pueden acceder a esta sección.");
                 return;
@@ -562,6 +574,9 @@
             if(id === 'produccion') actualizarVentasProduccion();
             if(id === 'dashboard') { calcularTotalesDia(); actualizarContadorSeleccionadas(); }
             if(id === 'config') { cargarConfiguracion(); }
+            if(id === 'ventas' && !editVentaOriginalMetadata) {
+                establecerFechaActual();
+            }
             renderTodo();
         }
 
@@ -606,7 +621,6 @@
 
             if(!nom || !pass) return alert("Por favor completa todos los datos del usuario.");
             
-            // Verificar que no exista un usuario con el mismo nombre
             const existe = usuarios.find((u, i) => u.nombre.toLowerCase() === nom && i !== indexMod);
             if(existe) return alert("Este nombre de usuario ya existe en el sistema.");
             
@@ -1101,6 +1115,9 @@
             renderTodo();
             calcularTotalesDia();
             
+            // Después de procesar, restaurar fecha actual
+            establecerFechaActual();
+            
             if(confirm("✅ Venta procesada con éxito! ¿Desea imprimir?")) {
                 const nuevoIdx = ventas.findIndex(v2 => v2.id === v.id && v2.fecha === v.fecha && v2.hora === v.hora);
                 if(nuevoIdx !== -1) imprimirFactura(nuevoIdx);
@@ -1253,9 +1270,7 @@
             document.getElementById('prodIniBot').value = 0;
             document.getElementById('prodFinBot').value = 0;
             document.getElementById('btnGuardarArqueo').innerHTML = 'GUARDAR ARQUEO';
-            const hoy = new Date();
-            const fechaStr = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
-            document.getElementById('prodFechaManual').value = fechaStr;
+            establecerFechaActual();
             actualizarVentasProduccion();
         }
 
